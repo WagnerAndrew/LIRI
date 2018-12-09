@@ -8,3 +8,6 @@ Depending on the user's selection from that initial prompt, a new prompt will sh
 Once entered information about that concert, song or movie will be listed.  
 
 If the user chooses "Do-What-It-Says", information that has been written to a text file will be entered and displayed.
+
+A link to a demonstration from the terminal can be found at:
+https://drive.google.com/file/d/1EbpmkKu2hDE9ljmxgz7sQ20MBVLPveO8/view
