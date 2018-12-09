@@ -4,17 +4,16 @@ var Spotify = require('node-spotify-api');
 var inquirer = require("inquirer");
 var axios = require("axios");
 var moment = require('moment');
+var fs = require("fs");
 
 // CHOICE IS CONCERT START
 function concertSearch() {
-
     inquirer.prompt([
         {
             type: "input",
             name: "concert",
             message: "What concert do you want to look for?"
         }
-
     ]).then(function (userConcert) {
 
         var concert = userConcert.concert;
@@ -34,7 +33,7 @@ function concertSearch() {
 
                         concertResponse.forEach(function (concert) {
                             console.log("*********************************************\n");
-                            
+
                             console.log(`Venue: ${concert.venue.name}\nVenue Location: ${concert.venue.city}, ${concert.venue.region}\nDate: ${moment(concert.datetime).format("MM/DD/YYYY")}\n`);
                         })
                     }
@@ -45,53 +44,51 @@ function concertSearch() {
 }
 // CHOICE IS CONCERT END
 
-
 // CHOICE IS SONG START
 function songSearch() {
-
     inquirer.prompt([
-
         {
             type: "input",
             name: "song",
             message: "What song do you want to look for?"
         }
-
     ]).then(function (userSong) {
 
         var spotify = new Spotify(keys.spotify);
         var song = userSong.song;
 
 
+
+
+
+
+
         spotify.search({ type: 'track', query: song, limit: 1 }, function (err, data) {
             if (err) {
                 return console.log('Error occurred: ' + err);
             }
-
             console.log(`Artist: ${data.tracks.items[0].artists[0].name}`);
             console.log(`Song Name: ${data.tracks.items[0].name}`);
             console.log(`Spotify Link: ${data.tracks.items[0].preview_url}`);
             console.log(`Album: ${data.tracks.items[0].album.name}`);
-
-
         });
+
+
+
 
     });
 }
 // CHOICE IS SONG END
 
-
 // CHOICE IS MOVIE START
 function movieSearch() {
 
     inquirer.prompt([
-
         {
             type: "input",
             name: "movie",
             message: "What movie do you want to look for?"
         }
-
     ]).then(function (userMovie) {
 
         var movie;
@@ -115,32 +112,62 @@ function movieSearch() {
 }
 // CHOICE IS MOVIE END
 
+// CHOICE DO WHAT IT SAYS START
+function doWhatItSays() {
 
+    fs.readFile("random.txt", "utf8", function (error, data) {
+
+        var dataArr = data.split(",");
+
+        if (error) {
+            return console.log(error);
+        }
+
+        else if (dataArr[0] == "spotify-this-song") {
+
+            spotify = new Spotify(keys.spotify);
+            song = dataArr[1].split('"').join('');
+
+            spotify.search({ type: 'track', query: song, limit: 1 }, function (err, data) {
+                if (err) {
+                    return console.log('Error occurred: ' + err);
+                }
+                console.log(`Artist: ${data.tracks.items[0].artists[0].name}`);
+                console.log(`Song Name: ${data.tracks.items[0].name}`);
+                console.log(`Spotify Link: ${data.tracks.items[0].preview_url}`);
+                console.log(`Album: ${data.tracks.items[0].album.name}`);
+            });
+        }
+    });
+}
+// CHOICE DO WHAT IT SAYS END
 
 // FIRST PROMPT START
 inquirer.prompt([
-
     {
         type: "list",
         name: "choice",
         message: "What do you want to search for?",
-        choices: ["Concert", "Song", "Movie", "Something Else"],
+        choices: ["Concert", "Song", "Movie", "Do What It Says"],
     }
-
 ]).then(function (user) {
 
     if (user.choice === "Concert") {
-        concertSearch ();
+        concertSearch();
     }
 
     else if (user.choice === "Song") {
-        songSearch ();
+        songSearch();
     }
 
     else if (user.choice === "Movie") {
-        movieSearch ();
+        movieSearch();
     }
- 
+
+    else if (user.choice === "Do What It Says") {
+        doWhatItSays();
+    }
+
 });
 // FIRST PROMPT END
 
