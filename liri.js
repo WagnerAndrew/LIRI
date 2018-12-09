@@ -134,21 +134,24 @@ function doWhatItSays() {
 
         // START CONCERT DO-WHAT-IT-SAYS
         else if (dataArr[0] == "concert-this") {
-            concert = dataArr[1].split('"').join('');
+            console.log("Data Array 1 Is:"+ dataArr);
+            concert = dataArr[1].split(' "').join('').split('"').join('');
+            console.log("CONCERT IS:"+ concert);
+            
             concertQueryURL = "https://rest.bandsintown.com/artists/" + concert + "/events?app_id=codingbootcamp";
 
             axios.get(concertQueryURL)
-                .then(
-                    function (response) {
-                        var concertResponse = response.data;
+            .then(
+                function (response) {
+                    concertResponse = response.data;
 
-                        if (concertResponse.length === 0) {
-                            console.log("There are no concerts scheduled for this artist.");
-                        } else {
-                            concertResponse.forEach(function (concert) {
-                                console.log("*********************************************\n");
-                                console.log(`Venue: ${concert.venue.name}\nVenue Location: ${concert.venue.city}, ${concert.venue.region}\nDate: ${moment(concert.datetime).format("MM/DD/YYYY")}\n`);
-                            })
+                    if (concertResponse.length === 0) {
+                        console.log("There are no concerts scheduled for this artist.");
+                    } else {
+                        concertResponse.forEach(function (concert) {
+                            console.log("*********************************************\n");
+                            console.log(`Venue: ${concert.venue.name}\nVenue Location: ${concert.venue.city}, ${concert.venue.region}\nDate: ${moment(concert.datetime).format("MM/DD/YYYY")}\n`);
+                        })
                         }
                     }
                 );
